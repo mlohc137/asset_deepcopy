@@ -67,8 +67,9 @@ function Home() {
               title="Asset DeepCopy"
               subtitle="A tool for creating portfolio weight-based snapshots and replicating them"
             />
+            <AddressBar addresses={addresses} addAddress={addAddress} removeAddress={removeAddress} />
           </div>
-          <AddressBar addresses={addresses} addAddress={addAddress} removeAddress={removeAddress} />
+          
         </div>
 
       </CenteredColumn>

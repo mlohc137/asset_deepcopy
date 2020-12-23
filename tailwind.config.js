@@ -58,6 +58,7 @@ module.exports = {
   variants: {
     extend: {
       textColor: ['visited'],
+      scale: ['group-hover']
     },
   },
   plugins: [
