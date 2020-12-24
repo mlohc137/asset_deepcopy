@@ -11,7 +11,7 @@ function Home() {
     setAddresses(addresses.concat(addressToAdd))
   }
   
-  const removeAddress = (event: React.MouseEvent<EventTarget>, idx: number) => {
+  const removeAddress = (idx: number) => {
     //let tempAddresses = addresses
     //tempAddresses.splice(idx, 1)
     //setAddresses(tempAddresses)

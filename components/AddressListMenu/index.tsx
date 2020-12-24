@@ -1,9 +1,9 @@
-import React from 'react'
-//import Avatar from '@material-ui/core/Avatar';
+import React, {useRef, useState, useEffect} from 'react'
+import { Transition } from '@headlessui/react'
 
 interface AddressListProps {
     addresses: Array<string>;
-    removeAddress: (event: React.MouseEvent<EventTarget>, index: number) => void;
+    removeAddress: (index: number) => void;
 } 
 /* addresses && addresses.map() works to check if value is defined
 because javascript does not evaluate the second element in a AND
@@ -11,60 +11,73 @@ if the first element evaluates to false */
 
 export default function AddressListMenu({ addresses, removeAddress }: AddressListProps) {
 
-    const [show, setShow] = React.useState(false);
+    const [show, setShow] = useState(false);
+    const [folioFocus, setFolioFocus] = useState(false);
+    const [addressFocus, setAddressFocus] = useState(-1);
 
-    const dropdownRef = React.useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleToggle = () => {
-        setShow((prevShow) => !prevShow);
-    };
+    const removeAddressHelper= ((event: React.MouseEvent, index: number) => {
+        // prevent menu from closing if last address in menu is deleted (since it's technically out of bounds after you delete it)
+        event.stopPropagation();
+        removeAddress(index);
+    });
 
-    const handleClose = (event: React.MouseEvent<EventTarget>) => {
-        if (dropdownRef.current && dropdownRef.current.contains(event.target as HTMLElement)) {
-          return;
-        }
-        setShow(false);
-    };
-
-    function handleListKeyDown(event: React.KeyboardEvent) {
-        if (event.key === 'Tab') {
-          event.preventDefault();
-          setShow(false);
-        }
-    };
-    // return focus to the button when we transitioned from !show -> show
-    // useEffect used to run code to rerender upon a value changing
-    const prevShow = React.useRef(show);
-    React.useEffect(() => {
-        if (prevShow.current === true && show === false) {
-        dropdownRef.current!.focus();
-        }
-        prevShow.current = show;
-    }, [show]);
+    useEffect(() => {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Element)) {
+                if(!show) return;
+                setShow(false);
+            }
+        };
+        window.addEventListener('click', handleOutsideClick);
+        return () => window.removeEventListener('click', handleOutsideClick);
+    }, [show, menuRef]);
     
     return (
-        <div className="group inline-block">
-            <button className="pl-1.5 p-1">
-              <svg className="fill-current" 
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd"/>
-                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/>
-              </svg>
+        <div ref={menuRef} className="group inline-block">
+            <button className="p-1 w-14 h-14" onClick={() => setShow(!show)} onMouseEnter={() => setFolioFocus(true)}
+                onMouseLeave={() => setFolioFocus(false)}>
+                {folioFocus || show
+                    ? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z" clip-rule="evenodd" />
+                        <path d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z" />
+                      </svg>
+                    : <div className="relative">
+                        <div className="absolute top-3 right-2 text-xs rounded-full -mt-1 -mr-2 px-1 font-bold bg-red-700 text-white">{addresses.length}</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                        </svg>
+                      </div>    
+                }
             </button>
-            <ol className="border rounded-sm transform scale-0 group-hover:scale-100 absolute 
-                left-0 transition duration-700 ease-in-out origin-top min-w-max">
-                {addresses && addresses.map((item, index) => {
-                    return(
-                        <li key={index} className="hover:bg-gray-700">
-                            <span className="pr-1">{item}</span>
-                            <button className="mr-auto">
-                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </li>
-                    )
-                })}
+            <ol className="absolute left-0 border-5 rounded-b-lg border-blue-800 bg-blue-800 min-w-max">
+                <Transition
+                    show={show}
+                    enter="transition ease-out duration-200 transform"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="transition ease-in duration-150 transform"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                >
+                    {addresses && addresses.map((item, index) => {
+                        return(
+                            <li key={index} className="relative flex items-center border-5 rounded-lg border-blue-800 hover:bg-gray-700" 
+                                onMouseEnter={() => setAddressFocus(index)}>
+                                <span className="mr-8 p-4 sm:text-sm md:text-base">{item}</span>
+                                {addressFocus===index && 
+                                    <button className="absolute right-2" onClick={(e) => removeAddressHelper(e, index)}>
+                                        <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                }       
+                            </li>
+                        )
+                    })}
+                </Transition>
             </ol>
         </div>
     )

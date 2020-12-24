@@ -42,14 +42,14 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
   //AddressListMenu addresses={addresses} removeAddress={removeAddress}/> 
 
   return (
-    <div className="relative flex flex-col w-full space-y-4">
-      <div className="relative flex flex-row w-full items-center border-5 rounded-lg focus-within:bg-indigo-700 bg-blue-800 focus-within:border-indigo-700 border-blue-800">
+    <div className="flex flex-col w-full space-y-4">
+      <div className="relative flex flex-row w-full items-center border-5 rounded-lg focus-within:border-indigo-700 border-blue-800 focus-within:bg-indigo-700 bg-blue-800">
         <span className="flex-none w-14 pt-1 pr-1 pb-1 pl-2">
             <AddressListMenu addresses={addresses} removeAddress={removeAddress}/>
         </span>
         <div className="flex-grow p-3">
           <input type="text" name="address_input" id="address_input"
-            className="group focus:border-indigo-700 flex-1 block border-7 border-blue-800 rounded-lg w-full p-2 sm:text-sm md:text-md lg:text-lg"
+            className="group flex-1 w-full p-2 block border-5 rounded-lg focus:border-indigo-700 border-blue-800 sm:text-sm md:text-base"
             placeholder="Enter Ethereum Address to Add" onChange={changeAddress}/>
         </div>
         <span className="flex-none w-14 pt-2 pr-1.5 pb-1.5 pl-1.5">
