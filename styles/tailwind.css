@@ -5,7 +5,7 @@
 
 /* Write your own custom base styles here */
 html {
-  @apply text-base bg-gray-50 dark:bg-gray-1000;
+  @apply text-base bg-gray-50 dark:bg-cyan-900;
 }
 
 /* Write your own custom component styles here */
@@ -99,14 +99,6 @@ h1 {
     @apply bg-gray-300 dark:bg-gray-700;
   }
 
-  .scale-0 { 
-    transform: scale(0);
-  }
-
-  .min-w-32 { 
-    min-width: 8rem;
-  }
-
   .page-subtitle {
     @apply text-xl;
   }
@@ -125,12 +117,6 @@ h1 {
 
   .nav-label.active a {
     @apply text-blue-500 bg-blue-500 bg-opacity-10;
-  }
-
-  @variants group-hover {
-    .scale-100 {
-      transform: scale(1);
-    }
   }
 
   .token.comment,

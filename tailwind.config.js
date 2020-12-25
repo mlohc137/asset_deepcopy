@@ -7,12 +7,16 @@ module.exports = {
     colors: {
       yellow: colors.yellow,
       purple: colors.purple,
-      blue: colors.blue,
+      blue: colors.cyan,
+      cyan: colors.cyan,
       gray: colors.gray,
       red: colors.red,
       green: colors.green,
       pink: colors.pink,
       indigo: colors.indigo,
+      lime: colors.lime,
+      emerald: colors.emerald,
+      teal: colors.teal,
       white: '#fff',
     },
     lineClamp: {
@@ -53,12 +57,14 @@ module.exports = {
       colors: {
         'gray-1000': '#050505',
       },
+      animation: {
+        'bounce-brief': 'bounce 2s linear infinite'
+      },
     },
   },
   variants: {
     extend: {
-      textColor: ['visited'],
-      scale: ['group-hover']
+      textColor: ['visited']
     },
   },
   plugins: [
