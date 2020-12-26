@@ -11,6 +11,7 @@ interface AddressBarProps {
 export default function AddressBar({ addresses, addAddress, removeAddress }: AddressBarProps) {
   const [address, setAddress] = React.useState("");
   const [validity, setValidity] = React.useState(0);
+  const [inputMessage, setInputMessage] = React.useState("");
 
   const changeAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
@@ -21,7 +22,7 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
       case 0:
         return "transition duration-500 ease-in-out fill-current text-gray-800";
       case 1:
-        return "transition duration-500 ease-in-out fill-current text-red-700";
+        return "transition duration-500 ease-in-out fill-current text-red-600";
       case 2:
         return "transition duration-500 ease-in-out fill-current text-lime-500";
     }
@@ -32,9 +33,21 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
       case 0:
         return " transition duration-500 ease-in-out";
       case 1:
-        return " transition duration-500 ease-in-out ring ring-red-700";
+        return " transition duration-500 ease-in-out ring-2 ring-red-600";
       case 2:
-        return " transition duration-500 ease-in-out ring ring-lime-600";
+        return " transition duration-500 ease-in-out ring-2 ring-lime-600";
+    }
+  };
+
+  // added pointer-events-none to the input message div so it doesn't interfere with dropdown menu hover
+  const inputMessageClass = (validity: number) => {
+    switch(validity) {
+      case 0:
+        return " transition duration-500 ease-linear fill-current text-cyan-700";
+      case 1:
+        return " transition duration-500 ease-linear fill-current text-red-600";
+      case 2:
+        return " transition duration-500 ease-linear fill-current text-lime-500";
     }
   };
 
@@ -42,11 +55,19 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
       var checksum = "";
       try {
         checksum = Web3Utils.toChecksumAddress(address);
-        addAddress(address);
-        setValidity(2);
+        if (addresses.includes(address)) {
+          setValidity(1);
+          setInputMessage("Address Already Exists in Portfolio!")
+        }
+        else {
+          addAddress(address);
+          setValidity(2);
+          setInputMessage("Address Added to Portfolio!")
+        }
       }
       catch(err) {
         setValidity(1);
+        setInputMessage("Invalid Ethereum Address!")
       }
   };
 
@@ -54,7 +75,8 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
     if (validity != 0) {
       setTimeout(() => { 
         setValidity(0)
-      }, 1000)
+        setInputMessage("")
+      }, 1200)
     }
   }, [validity]);
 
@@ -81,6 +103,9 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
             </svg>
           </button>
         </span>
+      </div>
+      <div className="relative flex flex-row w-full h-10 z-0 pointer-events-none">
+        <p className={"absolute right-10" + inputMessageClass(validity)}>{inputMessage}</p>
       </div>
     </div>
   );

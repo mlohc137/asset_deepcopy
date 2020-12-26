@@ -27,12 +27,21 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
     });
 
     const removeAddressHelper = ((event: React.MouseEvent, index: number) => {
-        // prevent menu from closing if last address in menu is deleted (since it's technically out of bounds after you delete it)    
+        // prevent menu from closing if last address in menu is deleted (since it's technically out of bounds after you delete it)
+        // prevAddresses used as an unelegant way to determine if addresses is empty before changes from removeAddress propagate downward.    
+        var prevAddresses = addresses.filter((addresses, idx) => index !== idx)
         removeAddress(index);
-        if (addresses.length != 0) {
+        if (prevAddresses.length != 0) {
             event.stopPropagation();
         }
+        else {
+            setShow(false);
+        }
     });
+
+    const setAddressFocusHelper = ((index: number) => {
+        setAddressFocus(index);
+    })
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -46,9 +55,9 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
     }, [show, menuRef]);
     
     return (
-        <div ref={menuRef} className="group inline-block">
+        <div ref={menuRef} className="group inline-block z-20">
             <button className="p-1 w-14 h-14" onClick={() => setShow(!show)}>
-                {show && addresses.length != 0
+                {show
                     ? <svg className="fill-current text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z" clip-rule="evenodd" />
                         <path d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z" />
@@ -76,7 +85,7 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
                     {addresses && addresses.map((item, index) => {
                         return(
                             <li key={index} className="relative flex items-center border-5 rounded-lg border-cyan-700 hover:bg-gray-800" 
-                                onMouseOver={() => setAddressFocus(index)} onMouseLeave={() => setAddressFocus(9999)}>
+                                onMouseEnter={() => setAddressFocusHelper(index)} onMouseLeave={() => setAddressFocusHelper(9999)}>
                                 <span className="mr-8 p-4 sm:text-sm md:text-base">{item}</span>
                                 {addressFocus===index && 
                                     <button className="absolute right-2" onClick={(e) => removeAddressHelper(e, index)}>

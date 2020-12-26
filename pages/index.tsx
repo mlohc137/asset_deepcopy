@@ -15,7 +15,9 @@ function Home() {
     //let tempAddresses = addresses
     //tempAddresses.splice(idx, 1)
     //setAddresses(tempAddresses)
+    // setAddresses happens AFTER this function runs
     setAddresses(addresses.filter((addresses, index) => idx !== index))
+    console.log("After Removal:\n")
     console.log(addresses)
   }
   
@@ -23,7 +25,7 @@ function Home() {
     <Page>
       <CenteredColumn>
         <div className="flex flex-col space-y-16">
-          <div className="flex flex-col space-y-8 md:items-center">
+          <div className="relative flex flex-col space-y-8 md:items-center">
               <svg id="Capa_1" height="85" viewBox="0 0 513.087 513.087" width="85" xmlns="http://www.w3.org/2000/svg">
                 <g>
                     <g>

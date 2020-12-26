@@ -58,7 +58,7 @@ module.exports = {
         'gray-1000': '#050505',
       },
       animation: {
-        'bounce-brief': 'bounce 2s linear infinite'
+        'bounce-brief': 'bounce 2s linear 1'
       },
     },
   },
