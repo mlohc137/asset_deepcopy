@@ -2,11 +2,11 @@ import * as React from 'react'
 import Web3Utils from 'web3-utils'
 import AddressListMenu from '../AddressListMenu'
 
-interface AddressBarProps {
+type AddressBarProps = {
     addresses: Array<string>;
     addAddress: (address: string) => void;
     removeAddress: (index: number) => void;
-}
+};
 
 export default function AddressBar({ addresses, addAddress, removeAddress }: AddressBarProps) {
   const [address, setAddress] = React.useState("");
@@ -81,9 +81,9 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
   }, [validity]);
 
   return (
-    <div className="flex flex-col w-full space-y-4">
+    <React.Fragment>
       <div className="relative flex flex-row w-full items-center bg-cyan-700 border-5 rounded-lg border-cyan-700">
-        <span className="flex-none w-14 pt-1 pr-1 pb-1 pl-2">
+        <span className="flex-none w-14 pt-1 pr-1 pb-1 pl-2 z-30">
             <AddressListMenu addresses={addresses} removeAddress={removeAddress} validity={validity}/>
         </span>
         <div className="flex-grow pt-3 pb-3 pr-0 pl-4">
@@ -104,10 +104,10 @@ export default function AddressBar({ addresses, addAddress, removeAddress }: Add
           </button>
         </span>
       </div>
-      <div className="relative flex flex-row w-full h-10 z-0 pointer-events-none">
+      <div className="relative flex flex-row w-full h-6 p-1 z-0 pointer-events-none">
         <p className={"absolute right-10" + inputMessageClass(validity)}>{inputMessage}</p>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 

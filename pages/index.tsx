@@ -2,9 +2,12 @@ import * as React from 'react'
 import Page, { PageHeader } from '../components/Page'
 import AddressBar from '../components/AddressBar'
 import { CenteredColumn } from '../components/Layouts'
+import TimeSlider from '../components/TimeSlider'
+import { isValid, startOfToday, startOfYesterday } from "date-fns";
 
 function Home() {
-  const [addresses, setAddresses] = React.useState<string[]>(['1000', '2000', '3000'])
+  const [addresses, setAddresses] = React.useState<string[]>([])
+  const [txnDateLB, setTxnDateLB] = React.useState(new Date(''))
   
   const addAddress = (address: string) => {
     const addressToAdd: Array<string> = [address]
@@ -15,12 +18,13 @@ function Home() {
     //let tempAddresses = addresses
     //tempAddresses.splice(idx, 1)
     //setAddresses(tempAddresses)
-    // setAddresses happens AFTER this function runs
+    // REMEMBER: Think of setState() as a request rather than an immediate command to update the component. 
+    // For better perceived performance, React may delay it, and then update several components in a single pass.
+    // React does not guarantee that the state changes are applied immediately.
     setAddresses(addresses.filter((addresses, index) => idx !== index))
-    console.log("After Removal:\n")
     console.log(addresses)
   }
-  
+
   return (
     <Page>
       <CenteredColumn>
@@ -69,7 +73,12 @@ function Home() {
               title="Asset DeepCopy"
               subtitle="A tool for creating portfolio weight-based snapshots and replicating them"
             />
-            <AddressBar addresses={addresses} addAddress={addAddress} removeAddress={removeAddress} />
+            <div className="flex flex-col w-full">
+              <AddressBar addresses={addresses} addAddress={addAddress} removeAddress={removeAddress} />
+            </div>
+            <div className="flex flex-col w-full items-center">
+              <TimeSlider txnDateLB={txnDateLB}></TimeSlider>
+            </div>
           </div>
           
         </div>

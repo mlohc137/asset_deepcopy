@@ -59,7 +59,6 @@ export default function Header() {
               className="text-primary"
               onClick={() => setExpanded(true)}
             >
-            
             </MenuButton>
             <Link href={activePath}>
               <a>

@@ -1,17 +1,15 @@
 import React, {useRef, useState, useEffect} from 'react'
 import { Transition } from '@headlessui/react'
 
-interface AddressListProps {
+type AddressListProps = {
     addresses: Array<string>;
     removeAddress: (index: number) => void;
     validity: number;
-} 
-/* addresses && addresses.map() works to check if value is defined
-because javascript does not evaluate the second element in a AND
-if the first element evaluates to false */
+};
+// addresses && addresses.map() works to check if value is defined because javascript does not evaluate the
+// second element in a AND if the first element evaluates to false 
 
 export default function AddressListMenu({ addresses, removeAddress, validity }: AddressListProps) {
-
     const [show, setShow] = useState(false);
     const [addressFocus, setAddressFocus] = useState(9999);
 
@@ -27,8 +25,10 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
     });
 
     const removeAddressHelper = ((event: React.MouseEvent, index: number) => {
-        // prevent menu from closing if last address in menu is deleted (since it's technically out of bounds after you delete it)
-        // prevAddresses used as an unelegant way to determine if addresses is empty before changes from removeAddress propagate downward.    
+        // Prevent menu from closing if last address in menu is deleted (since it's technically out of bounds after you delete it)
+        // prevAddresses used as an unelegant way to determine if addresses is empty before changes from removeAddress propagate downward. 
+        // If I do not use prevAddresses, show state will not be closed because removeAddress changes do not propagate before 
+        // 'if (address.length != 0)' is called. Should figure out a more elegant way to solve this.
         var prevAddresses = addresses.filter((addresses, idx) => index !== idx)
         removeAddress(index);
         if (prevAddresses.length != 0) {
@@ -38,10 +38,6 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
             setShow(false);
         }
     });
-
-    const setAddressFocusHelper = ((index: number) => {
-        setAddressFocus(index);
-    })
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -55,7 +51,7 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
     }, [show, menuRef]);
     
     return (
-        <div ref={menuRef} className="group inline-block z-20">
+        <div ref={menuRef} className="group inline-block">
             <button className="p-1 w-14 h-14" onClick={() => setShow(!show)}>
                 {show
                     ? <svg className="fill-current text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -85,7 +81,7 @@ export default function AddressListMenu({ addresses, removeAddress, validity }: 
                     {addresses && addresses.map((item, index) => {
                         return(
                             <li key={index} className="relative flex items-center border-5 rounded-lg border-cyan-700 hover:bg-gray-800" 
-                                onMouseEnter={() => setAddressFocusHelper(index)} onMouseLeave={() => setAddressFocusHelper(9999)}>
+                                onMouseEnter={() => setAddressFocus(index)} onMouseLeave={() => setAddressFocus(9999)}>
                                 <span className="mr-8 p-4 sm:text-sm md:text-base">{item}</span>
                                 {addressFocus===index && 
                                     <button className="absolute right-2" onClick={(e) => removeAddressHelper(e, index)}>
