@@ -1,22 +1,25 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/nextjs-frontend/node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+/golang-backend/fakedata
 
 # next.js
-/.next/
+/.next
+/nextjs-frontend/.next/
 /out/
 
 # production
 /build
+/golang-backend/build
 
 # misc
-.DS_Store
+*.DS_Store
 *.pem
 
 # debug

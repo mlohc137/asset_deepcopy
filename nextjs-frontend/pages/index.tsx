@@ -3,16 +3,27 @@ import Page, { PageHeader } from '../components/Page'
 import AddressBar from '../components/AddressBar'
 import { CenteredColumn } from '../components/Layouts'
 import TimeSlider from '../components/TimeSlider'
-import { isValid, startOfToday, startOfYesterday } from "date-fns";
+import { isAfter, isValid, startOfToday, startOfYesterday } from "date-fns";
 
 function Home() {
   const [addresses, setAddresses] = React.useState<string[]>([])
   const [txnDateLB, setTxnDateLB] = React.useState(new Date(''))
+  const [addressFirstTxns, setAddressFirstTxns] = React.useState<number[]>([])
+
+  const serverUrl = 'http://localhost:1234/'
+  //const apiKey = process.env.ETHPLORER_API_KEY
   
   const addAddress = (address: string) => {
-    const addressToAdd: Array<string> = [address]
-    setAddresses(addresses.concat(addressToAdd))
-  }
+    const addAddressHelper = (addresses: string[], addressFirstTxns: number[]) => {
+      const addressToAdd: Array<string> = [address]
+      // UNIX timestamp is in seconds, JS Date object is in ms
+      fetch(serverUrl + 'firstTxnDate?address=' + addressToAdd)
+        .then(resp => {return resp.json()})
+        .then(jsonData => {setAddressFirstTxns(addressFirstTxns.concat(parseInt(jsonData.Date) * 1000))})
+      setAddresses(addresses.concat(addressToAdd))
+    };
+    addAddressHelper(addresses, addressFirstTxns);
+  };
   
   const removeAddress = (idx: number) => {
     //let tempAddresses = addresses
@@ -21,9 +32,31 @@ function Home() {
     // REMEMBER: Think of setState() as a request rather than an immediate command to update the component. 
     // For better perceived performance, React may delay it, and then update several components in a single pass.
     // React does not guarantee that the state changes are applied immediately.
-    setAddresses(addresses.filter((addresses, index) => idx !== index))
-    console.log(addresses)
-  }
+    const removeAddressHelper = (addresses: string[], addressFirstTxns: number[]) => {
+      setAddresses(addresses.filter((value, index) => idx !== index));
+      setAddressFirstTxns(addressFirstTxns.filter((value, index) => idx !== index));
+    };
+    removeAddressHelper(addresses, addressFirstTxns);
+  };
+
+  const recalcTxnDateLB = (currFirstTxns: number[]) => {
+    // TODO: should delete element if invalid first transaction
+    if (currFirstTxns.length !== 0) {
+      const newTxnDateLB = new Date(Math.min(...currFirstTxns));
+      if (isValid(newTxnDateLB)){
+        setTxnDateLB(newTxnDateLB);
+      };
+    } else {
+        setTxnDateLB(new Date(''));
+    };
+  };
+
+  React.useEffect(
+    () => {
+      recalcTxnDateLB(addressFirstTxns);
+    },
+    [addressFirstTxns],
+  );
 
   return (
     <Page>
@@ -80,9 +113,7 @@ function Home() {
               <TimeSlider txnDateLB={txnDateLB}></TimeSlider>
             </div>
           </div>
-          
         </div>
-
       </CenteredColumn>
     </Page>
   )
