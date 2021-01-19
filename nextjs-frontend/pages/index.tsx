@@ -3,27 +3,33 @@ import Page, { PageHeader } from '../components/Page'
 import AddressBar from '../components/AddressBar'
 import { CenteredColumn } from '../components/Layouts'
 import TimeSlider from '../components/TimeSlider'
+import FolioChart from '../components/FolioChart'
 import { isAfter, isValid, startOfToday, startOfYesterday } from "date-fns";
 
 function Home() {
   const [addresses, setAddresses] = React.useState<string[]>([])
   const [txnDateLB, setTxnDateLB] = React.useState(new Date(''))
   const [addressFirstTxns, setAddressFirstTxns] = React.useState<number[]>([])
+  const mockData = [
+    { title: "BTC", value: 55.56, color: '#E38627', units: 21000000, href: "/btc.png", fiat: 21900000}, 
+    { title: "ETH", value: 34.44, color: '#C13C37', units: 1300, href: "/eth.png", fiat: 12345}, 
+    { title: "YFI", value: 10, color: '#6A2135', units: 123456, href: "/yfi.png", fiat: 15.7}
+  ];
 
   const serverUrl = 'http://localhost:1234/'
   //const apiKey = process.env.ETHPLORER_API_KEY
   
   const addAddress = (address: string) => {
-    const addAddressHelper = (addresses: string[], addressFirstTxns: number[]) => {
+    const addAddressHelper = (currAddresses: string[], currFirstTxns: number[]) => {
       const addressToAdd: Array<string> = [address]
       // UNIX timestamp is in seconds, JS Date object is in ms
       fetch(serverUrl + 'firstTxnDate?address=' + addressToAdd)
         .then(resp => {return resp.json()})
-        .then(jsonData => {setAddressFirstTxns(addressFirstTxns.concat(parseInt(jsonData.Date) * 1000))})
-      setAddresses(addresses.concat(addressToAdd))
+        .then(jsonData => {setAddressFirstTxns(currFirstTxns.concat(parseInt(jsonData.Value) * 1000))})
+      setAddresses(currAddresses.concat(addressToAdd))
     };
     addAddressHelper(addresses, addressFirstTxns);
-  };
+  };4
   
   const removeAddress = (idx: number) => {
     //let tempAddresses = addresses
@@ -32,9 +38,9 @@ function Home() {
     // REMEMBER: Think of setState() as a request rather than an immediate command to update the component. 
     // For better perceived performance, React may delay it, and then update several components in a single pass.
     // React does not guarantee that the state changes are applied immediately.
-    const removeAddressHelper = (addresses: string[], addressFirstTxns: number[]) => {
-      setAddresses(addresses.filter((value, index) => idx !== index));
-      setAddressFirstTxns(addressFirstTxns.filter((value, index) => idx !== index));
+    const removeAddressHelper = (currAddresses: string[], currFirstTxns: number[]) => {
+      setAddresses(currAddresses.filter((value, index) => idx !== index));
+      setAddressFirstTxns(currFirstTxns.filter((value, index) => idx !== index));
     };
     removeAddressHelper(addresses, addressFirstTxns);
   };
@@ -111,6 +117,9 @@ function Home() {
             </div>
             <div className="flex flex-col w-full items-center">
               <TimeSlider txnDateLB={txnDateLB}></TimeSlider>
+            </div>
+            <div className="relative flex flex-col w-full items-center">
+              <FolioChart data={mockData}></FolioChart>
             </div>
           </div>
         </div>

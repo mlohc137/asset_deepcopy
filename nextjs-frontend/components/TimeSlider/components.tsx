@@ -72,6 +72,7 @@ export class TooltipRail extends React.Component<TooltipRailProps> {
     render() {
       const { value, percent } = this.state;
       const { activeHandleID, getRailProps, disabled } = this.props;
+      console.log("Percent logged at TooltipRail Render() " + `${percent}`)
       return (
         <React.Fragment>
           {!activeHandleID && value && !disabled ? (
@@ -127,13 +128,14 @@ export class TooltipRail extends React.Component<TooltipRailProps> {
         railHover,
         getHandleProps,
       } = this.props;
-      
+
+      console.log("Percent logged at Handle Render() " + `${percent}`)
       return (
         <React.Fragment>
           {!railHover ? (
             <div
               style={{
-                left: `${percent}%`,
+                left: disabled ? '100%' : `${percent}%`,
                 position: 'absolute',
                 marginLeft: '-53px',
                 marginTop: '-35px',
@@ -149,7 +151,7 @@ export class TooltipRail extends React.Component<TooltipRailProps> {
           ) : null}
           <div
             style={{
-              left: `${percent}%`,
+              left: disabled ? '100%' : `${percent}%`,
               position: 'absolute',
               transform: 'translate(-50%, -50%)',
               WebkitTapHighlightColor: 'rgba(0,0,0,0)',
@@ -167,7 +169,7 @@ export class TooltipRail extends React.Component<TooltipRailProps> {
             aria-valuemax={max}
             aria-valuenow={value}
             style={{
-              left: `${percent}%`,
+              left: disabled ? '100%' : `${percent}%`,
               position: 'absolute',
               transform: 'translate(-50%, -50%)',
               WebkitTapHighlightColor: 'rgba(0,0,0,0)',
