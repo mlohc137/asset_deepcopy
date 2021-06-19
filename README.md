@@ -14,5 +14,5 @@ etherscan JSON dump for testing. This was mostly a learning experiment with Reac
 
 Eventually settled on Tailwind which is what the current version is built with.
 
-![](https://gfycat.com/madeupimpassionedicelandgull)
+![](AssetDeepCopyDemo.gif)
 
